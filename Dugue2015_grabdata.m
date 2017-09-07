@@ -121,7 +121,7 @@ xlim([-1,1])
 
 %% Use these p1/p2 standard errors for the alternative hypothesis that attention oscillates
 
-p1_uc = .6; % all or none switching model says that if you are right on one side you guess on the other
+p1_uc = .6; % switching model says that if you are right on one side you guess on the other
 p2_uc = 1/6;
 p1_se = mean(p1_Dugse);
 p2_se = mean(p2_Dugse);
@@ -188,8 +188,8 @@ xlim([-1,1])
 
 %% Calculate the achieved power under the two scenarios above
 
-p = .05; % What is our alpha
+p = .05; % What is our alpha?
 
 % Where is the critical value between the two P1-P2 distributions?
 crit = prctile(Pdif_unlim,(1-p)*100);
-power_achieved = sum(Pdif_switch > crit)/length(Pdif_switch)
+power_achieved = sum(Pdif_switch > crit)/length(Pdif_switch);
