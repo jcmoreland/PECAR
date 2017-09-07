@@ -90,6 +90,12 @@ end
 pc = mean(resp);
 Pdif_unlim = abs(P1-P2);  % Take the absolute because the larger value on any analysis was taken as the most attended location
 
+%% Sperling analysis
+% For the unlimited capacity result there should be no correlation between
+% the correctness of both responses in a trial.
+
+[r_unlim,pval_unlim] = corr(resp);
+
 %% Figure for the simulation results 
 figure(3)
 clf
@@ -121,7 +127,7 @@ xlim([-1,1])
 
 %% Use these p1/p2 standard errors for the alternative hypothesis that attention oscillates
 
-p1_uc = .6; % switching model says that if you are right on one side you guess on the other
+p1_uc = .8; % switching model says that if you are right on one side you guess on the other
 p2_uc = 1/6;
 p1_se = mean(p1_Dugse);
 p2_se = mean(p2_Dugse);
@@ -159,6 +165,12 @@ end
 
 pc = mean(resp); % Shuffle because left and right are kind of meaningless here
 Pdif_switch = abs(P1-P2);  % Take the absolute because the larger value on any analysis was taken as the most attended location
+
+%% Sperling analysis
+% For the switching result there should be a negative correlation between
+% the correctness of both responses in a trial.
+
+[r_switch,pval_switch] = corr(resp);
 
 %% Figure for the simulation results 
 
