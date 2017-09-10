@@ -163,9 +163,8 @@ for n = 1:N
     P2(n) = min(tmp);
 end
 
-pc = mean(resp); % Shuffle because left and right are kind of meaningless here
-Pdif_switch = abs(P1-P2);  % Take the absolute because the larger value on any analysis was taken as the most attended location
-
+pc = mean(resp);
+Pdif_switch = P1-P2;
 %% Sperling analysis
 % For the switching result there should be a negative correlation between
 % the correctness of both responses in a trial.
