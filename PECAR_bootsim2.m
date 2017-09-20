@@ -15,7 +15,7 @@ rng(seed)
 Nboot = 10000;  % Number of samples to bootstrap
 Nsim = 100;     % Number of times to simulate the data set
 nTrials = 1400; % Nunber of trials per simulation
-scalehist = Nsim/2;
+scalehist = Nsim/4;
 
 datadr = 'C:\Users\Kit Moreland\Dropbox\UW\Research\DividedAttention\PECAR_DugueSenoussi\';
 datafile = dir([datadr,'*.mat']);
@@ -203,14 +203,14 @@ subplot(4,3,5)
 histogram(P1_sim_switch,'BinWidth',.01)
 xlabel('P1 value')
 ylabel('Frequency')
-xlim([0,1])
+xlim([-.2,.6])
 ylim([0,scalehist])
 % P2
 subplot(4,3,8)
 histogram(P2_sim_switch,'BinWidth',.01)
 xlabel('P2 value')
 ylabel('Frequency')
-xlim([0,1])
+xlim([-.2,.6])
 ylim([0,scalehist])
 
 % pDif
@@ -219,7 +219,7 @@ subplot(4,3,11)
 histogram(Pdif_switch,'BinWidth',.01)
 xlabel('(P1 - P2) value')
 ylabel('Frequency')
-xlim([0,1])
+xlim([-.2,.6])
 ylim([0,scalehist])
 
 %% 2. Unlimited parallel
@@ -299,14 +299,14 @@ subplot(4,3,6)
 histogram(P1_sim_unlim,'BinWidth',.01)
 xlabel('P1 value')
 ylabel('Frequency')
-xlim([0,1])
+xlim([-.2,.6])
 ylim([0,scalehist])
 % P2
 subplot(4,3,9)
 histogram(P2_sim_unlim,'BinWidth',.01)
 xlabel('P2 value')
 ylabel('Frequency')
-xlim([0,1])
+xlim([-.2,.6])
 ylim([0,scalehist])
 
 % pDif
@@ -315,7 +315,8 @@ subplot(4,3,12)
 histogram(Pdif_unlim,'BinWidth',.01)
 xlabel('(P1 - P2) value')
 ylabel('Frequency')
-xlim([0,1])
+xlim([-.2,.6])
+ylim([0,scalehist])
 
 %% Calculate the achieved power under the two scenarios above
 
@@ -325,4 +326,4 @@ p = .05; % What is our alpha?
 crit = prctile(Pdif_unlim,(1-p)*100);
 power_achieved = sum(Pdif_switch > crit)/length(Pdif_switch);
 fprintf('Power acheived: %.1f%%\n',power_achieved*100)
-ylim([0,scalehist])
+text(.2,10,sprintf('Power achieved: %.1f%%',power_achieved*100))
