@@ -24,7 +24,7 @@
 
 clear all; %close all
 
-validity = 1;   % 1 = valid, 2 = invalid
+validity = 2;   % 1 = valid, 2 = invalid
 
 savestuff = 0;  % Do you want to save figures?
 seed = 9192017;
@@ -159,7 +159,7 @@ subplot(2,2,1)
 plot(t,y1,'b-');
 xlabel('Time (s)');
 ylabel('Amplitude');
-ylim([0,.5])
+% ylim([0,1])
 title('Resampled: P1P2 difference with delay')
 
 subplot(2,2,2)
@@ -168,13 +168,13 @@ set(gca,'XLim',[0,max(Y1.freq)],'XTick',0:2:max(Y1.freq));
 xlabel('Frequency (Hz)');
 ylabel('Amplitude');
 title('Resampled: Amplitude of frequencies')
-ylim([0,.1])
+ylim([0,.3])
 
 subplot(2,2,3)
 plot(t,y2,'b-');
 xlabel('Time (s)');
 ylabel('Amplitude');
-ylim([0,.5])
+% ylim([0,1])
 title('Permutation: P1P2 difference with delay')
 
 subplot(2,2,4)
@@ -183,7 +183,7 @@ set(gca,'XLim',[0,max(Y1.freq)],'XTick',0:2:max(Y1.freq));
 xlabel('Frequency (Hz)');
 ylabel('Amplitude');
 title('Permutation: Amplitude of frequencies')
-ylim([0,.1])
+ylim([0,.3])
 
 
 
