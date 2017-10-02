@@ -15,19 +15,26 @@
 %
 % 9/19/2017 JC Moreland
 
-clear all; close all
+clear all; %close all
+
+validity = 1;   % 1 = valid, 2 = invalid
 
 savestuff = 0;  % Do you want to save figures?
-
 seed = 9192017;
 rng(seed)
 Nsamp = 10000;  % Number of samples to bootstrap
 scalehist = Nsamp/4;
 
 datadr = 'C:\Users\Kit Moreland\Dropbox\UW\Research\DividedAttention\PECAR_DugueSenoussi\';
-datafile = dir([datadr,'*.mat']);
+datafile = dir([datadr,'datastruct*.mat']);
 load(fullfile(datadr, datafile.name))
-data = probe_info_valid;
+
+switch validity
+    case 1 % valid
+        data = valid;
+    case 2 % invalid
+        data = invalid;
+end
 
 %% Resample and analyse, then shuffle and reanalyse for each run
 nsubj = length(data);
@@ -81,36 +88,36 @@ P2_shuff_mean = mean(P2_shuff,1);
 P1P2_resamp_diff = P1_resamp_mean - P2_resamp_mean;
 P1P2_shuff_diff = P1_shuff_mean - P2_shuff_mean;
 
-figure(1)
-clf
-subplot(3,1,1)
-histogram(P1P2_resamp_diff,'Binwidth',.01,'FaceColor',[188 143 143]/255)
-xlim([-.3,.3])
-ylim([0,scalehist])
-xlabel('(P1 - P2)')
-ylabel('Frequency')
-title('Resampling P1/P2 Difference')
-
-subplot(3,1,2)
-histogram(P1P2_shuff_diff,'Binwidth',.01,'FaceColor',[237 145 33]/255)
-xlim([-.3,.3])
-ylim([0,scalehist])
-xlabel('(P1 - P2)')
-ylabel('Frequency')
-title('Shuffled P1/P2 Difference')
+% figure(validity)
+% clf
+% subplot(3,1,1)
+% histogram(P1P2_resamp_diff,'Binwidth',.01,'FaceColor',[188 143 143]/255)
+% xlim([-.3,.3])
+% ylim([0,scalehist])
+% xlabel('(P1 - P2)')
+% ylabel('Frequency')
+% title('Resampling P1/P2 Difference')
+% 
+% subplot(3,1,2)
+% histogram(P1P2_shuff_diff,'Binwidth',.01,'FaceColor',[237 145 33]/255)
+% xlim([-.3,.3])
+% ylim([0,scalehist])
+% xlabel('(P1 - P2)')
+% ylabel('Frequency')
+% title('Shuffled P1/P2 Difference')
 
 %% Calculate the achieved power under the two scenarios above
 
 % Plot distributions on the same axis
-figure(1)
-subplot(3,1,3)
-hold on
-histogram(P1P2_resamp_diff,'Binwidth',.01,'FaceColor',[188 143 143]/255)
-histogram(P1P2_shuff_diff,'Binwidth',.01,'FaceColor',[237 145 33]/255)
-xlim([-.3,.3])
-ylim([0,scalehist])
-xlabel('(P1 - P2) value')
-ylabel('Frequency')
+% figure(validity)
+% subplot(3,1,3)
+% hold on
+% histogram(P1P2_resamp_diff,'Binwidth',.01,'FaceColor',[188 143 143]/255)
+% histogram(P1P2_shuff_diff,'Binwidth',.01,'FaceColor',[237 145 33]/255)
+% xlim([-.3,.3])
+% ylim([0,scalehist])
+% xlabel('(P1 - P2) value')
+% ylabel('Frequency')
 
 p = .05; % What is our alpha?
 
@@ -124,3 +131,5 @@ power_achieved = sum(P1P2_resamp_diff > crit)/length(P1P2_resamp_diff);
 fprintf('Power acheived: %.1f%%\n',power_achieved*100)
 
 title(sprintf('Comparison P1/P2 Difference. Power achieved: %.1f%%',power_achieved*100))
+
+

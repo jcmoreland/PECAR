@@ -7,11 +7,10 @@
 % 9/12/2017 JC Moreland
 % 9/30/2017 JCM update to do both valid and invalid
 
-clear all; %close all
-
-validity = 2;   % 1 = valid, 2 = invalid
+clear all; close all
 
 savestuff = 0;  % Do you want to save figures?
+
 seed = 9102017;
 rng(seed)
 Nboot = 10000;  % Number of samples to bootstrap
@@ -20,15 +19,10 @@ nTrials = 1400; % Nunber of trials per simulation
 scalehist = Nsim/4;
 
 datadr = 'C:\Users\Kit Moreland\Dropbox\UW\Research\DividedAttention\PECAR_DugueSenoussi\';
-datafile = dir([datadr,'datastruct*.mat']);
+datafile = dir([datadr,'*.mat']);
 load(fullfile(datadr, datafile.name))
-
-switch validity
-    case 1 % valid
-        data = valid;
-    case 2 % invalid
-        data = invalid;
-end
+data = probe_info;
+validity = validity_all;
 
 %% Bootstrap P1 and P2 for each observer
 nsubj = length(data);
@@ -44,30 +38,45 @@ pcse = zeros(nsubj,2);
 for ss = 1:nsubj
     nt = size(data{ss},1);  % Number of trials
     
+    curv = logical(validity{ss} - 1);   % Pull current subj's validity data (recode to 0-invalid,1-valid)
     curd = data{ss};                    % Pull current subj's data from cell array
+    
+    % Valid (use curv == 1)
+    r1v = curd(curv,3);
+    r2v = curd(curv,4);
+    % Invalid (use curv == 0)
+    r1i = curd(~curv,3);
+    r2i = curd(~curv,4);
+    % Sanity check
+    nvp = length(r1v)/nt;   % Proportion of valid trials (should be ~75%)
+    nip = length(r1i)/nt;   % ...of invalid trials (should be ~25%)
+    fprintf(1,'Proportion of valid trials for subj %i: %.2f\n',ss,nvp);
+    fprintf(1,'Proportion of invalid trials for subj %i: %.2f\n',ss,nip);
+    
+    r1 = {r1v,r1i}; % cell arrays for convenient loops
+    r2 = {r2v,r2i};
+    nr = {length(r1v,length(r1i)};
+    
+    for v = 1:2 % for valid and invalid
+        % Bootstrap
+        P1tmp = zeros(1,Nboot);
+        P2tmp = zeros(1,Nboot);
+        pctmp = zeros(Nboot,2);
+        for bt = 1:Nboot
+            % Sample with replacement a sample of the same size for this
+            % subject. Need to sample the index so the pairing of probe 1 and
+            % two always remains matched.
+            idx = datasample(1:nr{v},nr{v});
+            r1tmp = r1{v}(idx);
+            r2tmp = r2{v}(idx);
             
-    r1 = curd(:,3);
-    r2 = curd(:,4);
-    
-    % Bootstrap
-    P1tmp = zeros(1,Nboot);
-    P2tmp = zeros(1,Nboot);
-    pctmp = zeros(Nboot,2);
-    for bt = 1:Nboot
-        % Sample with replacement a sample of the same size for this
-        % subject. Need to sample the index so the pairing of probe 1 and
-        % two always remains matched.
-        idx = datasample(1:nt,nt);
-        r1tmp = r1(idx);
-        r2tmp = r2(idx);
+            % Do the normal analysis for this sample and store
+            [P1tmp(bt), P2tmp(bt)] = quadsolve(r1tmp, r2tmp, nt);
+            % Percent correct fot this sim
+            pctmp(bt,:) = mean([r1tmp,r2tmp]);
+            
+        end
         
-        % Do the normal analysis for this sample and store
-        [P1tmp(bt), P2tmp(bt)] = quadsolve(r1tmp, r2tmp, nt);
-        % Percent correct fot this sim
-        pctmp(bt,:) = mean([r1tmp,r2tmp]);
-        
-    end
-    
     P1(ss) = mean(P1tmp);
     P1se(ss) = std(P1tmp);
     P2(ss) = mean(P2tmp);
@@ -93,7 +102,7 @@ pcsegroup = std(pc)/sqrt(nsubj);
 % Within subject mean PC SE and variability
 pcsewithin = mean(pcse);
 
-figure(validity) 
+figure(1)
 clf
 subplot(4,3,1)
 hold on
@@ -187,7 +196,7 @@ for n = 1:Nsim
     
 end
 
-figure(validity) 
+figure(1)
 subplot(4,3,2)
 hold on
 % Percent correct
@@ -283,7 +292,7 @@ for n = 1:Nsim
 end
 
 
-figure(validity) 
+figure(1)
 subplot(4,3,3)
 hold on
 % Percent correct

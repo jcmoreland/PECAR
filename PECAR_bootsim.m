@@ -5,15 +5,12 @@
 % of the real data. This will likely give the simulation more power to
 % detect an effect of switching.
 %
-% Not sure of the right method of getting the standard errors from the
-% bootstrapped P1 and P2
-%
 % 9/10/2017 JC Moreland
 
-clear all; close all
+clear all; %close all
+validity = 2;   % 1 = valid, 2 = invalid
 
 savestuff = 0;  % Do you want to save figures?
-
 seed = 9102017;
 rng(seed)
 Nboot = 10000;  % Number of samples to bootstrap
@@ -22,9 +19,15 @@ nTrials = 1400; % Nunber of trials per simulation
 scalehist = Nsim/2;
 
 datadr = 'C:\Users\Kit Moreland\Dropbox\UW\Research\DividedAttention\PECAR_DugueSenoussi\';
-datafile = dir([datadr,'*.mat']);
+datafile = dir([datadr,'datastruct*.mat']);
 load(fullfile(datadr, datafile.name))
-data = probe_info_valid;
+
+switch validity
+    case 1 % valid
+        data = valid;
+    case 2 % invalid
+        data = invalid;
+end
 
 %% Bootstrap P1 and P2 for each observer
 nsubj = length(data);
@@ -73,7 +76,7 @@ for ss = 1:nsubj
     pcse(ss,:) = std(pctmp);
 end
 
-figure(1)
+figure(validity)
 clf
 subplot(4,3,1)
 hold on
@@ -160,7 +163,7 @@ for n = 1:Nsim
     
 end
 
-figure(1)
+figure(validity)
 subplot(4,3,2)
 hold on
 % Percent correct
@@ -249,7 +252,7 @@ for n = 1:Nsim
 end
 
 
-figure(1)
+figure(validity)
 subplot(4,3,3)
 hold on
 % Percent correct
