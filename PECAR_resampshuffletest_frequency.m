@@ -24,7 +24,7 @@
 
 clear all; %close all
 
-validity = 2;   % 1 = valid, 2 = invalid
+validity = 1;   % 1 = valid, 2 = invalid
 
 savestuff = 0;  % Do you want to save figures?
 seed = 9192017;
@@ -113,8 +113,8 @@ figure(1)
 clf
 subplot(1,2,1)
 hold on
-plot(1:ndelays,mean(P1_resamp_mean),'r-')
-plot(1:ndelays,mean(P2_resamp_mean),'b-')
+plot(1:ndelays,mean(P1_resamp_mean),'ro-')
+plot(1:ndelays,mean(P2_resamp_mean),'bo-')
 set(gca,'XTick',1:2:14,'XTickLabel',linspace(40,520,7))
 xlabel('Delay (ms)')
 ylabel('Probability correct report')
@@ -122,8 +122,8 @@ title('Resampled')
 
 subplot(1,2,2)
 hold on
-plot(1:ndelays,mean(P1_shuff_mean),'r-')
-plot(1:ndelays,mean(P2_shuff_mean),'b-')
+plot(1:ndelays,mean(P1_shuff_mean),'ro-')
+plot(1:ndelays,mean(P2_shuff_mean),'bo-')
 set(gca,'XTick',1:2:14,'XTickLabel',linspace(40,520,7))
 xlabel('Delay (ms)')
 ylabel('Probability correct report')
