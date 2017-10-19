@@ -3,11 +3,12 @@
 % Create some fake data which has or does not have a periodicity to it and
 % attempt to reconstruct it.
 clear all
+close all
 
 nsim = 1000; % How many times to run the subject groups through the analysis
 
 nsubj = 15;
-noise = 1; % 0 is no noise
+noise = 2; % 0 is no noise
 
 % The frequency analysis occurs on the pdif so start by creating a pdif
 % vector.
@@ -31,7 +32,7 @@ L = nt_sampled-1; % number of sampled periods
 f = Fs*(0:(L/2))/L; 
 freqs = f(2:end); % sampled frequencies
 
-nCycles = 5; % Make this the period of the effect
+nCycles = 4; % Make this the period of the effect
 amp = 1;
 phase = 0;
 
@@ -42,16 +43,16 @@ id = 2:11;
 figure(2)
 stem(2*abs(y(id))/nt,'fill')
 
-figure(1)
-clf
-subplot(3,1,1)
-hold on
-plot(t, pdif)
-xlabel('Time (s)');
-set(gca,'XTick',0:.1:maxt);
-set(gca,'YTick',-1.5:1.5);
-ylabel('P1/P2 Difference');
-set(gca,'YLim',amp*3*[-1,1]);
+% figure(1)
+% clf
+% subplot(3,1,1)
+% hold on
+% plot(t, pdif)
+% xlabel('Time (s)');
+% set(gca,'XTick',0:.1:maxt);
+% set(gca,'YTick',-1.5:1.5);
+% ylabel('P1/P2 Difference');
+% set(gca,'YLim',amp*3*[-1,1]);
 
 %% Now simulate groups of observers
 for i = 1:nsim
@@ -83,8 +84,10 @@ pdiff_se = mean(pdif_group);
 pdif_amps_mean = mean(pdif_amps_mean_tmp);
 pdif_amps_se = mean(pdif_amps_se_tmp);
 
+%%
+figure(2)
 % Plot the mean data of pdif with periodicity
-subplot(3,1,2)
+subplot(2,1,1)
 hold on
 errorbar(t(t_loc), pdiff_mean, pdiff_se, 'ko-')
 xlabel('Time (s)');
@@ -92,15 +95,16 @@ set(gca,'XTick',0:.1:maxt);
 set(gca,'YTick',-1.5:1.5);
 ylabel('P1/P2 Difference');
 set(gca,'YLim',amp*3*[-1,1]);
+title('Example simulation run')
 
 % Plot the frequency spectra
-subplot(3,1,3)
+subplot(2,1,2)
 hold on
 errorbar(freqs,pdif_amps_mean,pdif_amps_se,'ko-')
 set(gca,'XTick',freqs,'XTickLabel',round(freqs,3,'Significant'))
 xlabel('Frequency')
 ylabel('Amplitude')
-title('Real data: Frequency power')
+title('Frequency power')
 % Add a line at the real frequency of this fake data
 plot([nCycles,nCycles],[0,max(pdif_amps(:))],'k:','LineWidth',2)
 
@@ -110,4 +114,11 @@ hold on
 hist(maxampfreq)
 set(gca,'XTick',freqs,'XTickLabel',round(freqs,3,'Significant'),...
     'XLim',[0,max(freqs)+1],'YLim',[0,nsim+20])
+xlabel('Frequency')
+ylabel('Number of simulations')
+title(sprintf('Number of simulations with each frequency as a max. Noise: %d. Cycles: %d',noise,nCycles))
+
+bestf = freqs(abs(freqs-nCycles)==min(abs(freqs-nCycles)));
+propbest = sum(maxampfreq == bestf)/nsim;
+text(freqs(end-4),.75*nsim, sprintf('Proportion with best freq as max: %.2f',propbest))
 
